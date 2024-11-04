@@ -31,6 +31,21 @@ export const allSlice = createSlice({
     resetEmployeeDataStatus(state) {
       state.employeesDataStatus = "idle";
     },
+    resetAddEmployeeDataStatus(state) {
+      state.addEmployeeDataStatus = "idle";
+    },
+    resetVegetablesDataStatus(state) {
+      state.vegetablesDataStatus = "idle";
+    },
+    resetAddVegetableDataStatus(state) {
+      state.addVegetableDataStatus = "idle";
+    },
+    resetTiffinsDataStatus(state) {
+      state.tiffinsDataStatus = "idle";
+    },
+    resetAddTiffinDataStatus(state) {
+      state.addTiffinDataStatus = "idle";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -77,6 +92,7 @@ export const allSlice = createSlice({
       .addCase(addVegetable.fulfilled, (state, action) => {
         state.addVegetableDataStatus = "success";
         state.addVegetableData = action.payload;
+        showToast("Vegetable Added Successfully", "success");
       })
       .addCase(addVegetable.rejected, (state, action) => {
         state.addVegetableDataStatus = "failed";
@@ -110,4 +126,11 @@ export const allSlice = createSlice({
 });
 
 export default allSlice.reducer;
-export const { resetEmployeeDataStatus } = allSlice.actions;
+export const {
+  resetEmployeeDataStatus,
+  resetAddEmployeeDataStatus,
+  resetVegetablesDataStatus,
+  resetAddVegetableDataStatus,
+  resetTiffinsDataStatus,
+  resetAddTiffinDataStatus,
+} = allSlice.actions;

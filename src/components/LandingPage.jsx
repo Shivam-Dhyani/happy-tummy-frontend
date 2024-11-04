@@ -111,7 +111,7 @@ const LandingPage = () => {
       >
         <Container>
           <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 3 }}>
-            Built with ❤️ by SSPL Team for SSPL Team
+            Built with ❤️ by SSPL Fam for SSPL Fam
           </Typography>
           <Typography
             variant="body1"
