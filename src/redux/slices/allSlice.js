@@ -117,6 +117,7 @@ export const allSlice = createSlice({
       .addCase(addTiffin.fulfilled, (state, action) => {
         state.addTiffinDataStatus = "success";
         state.addTiffinData = action.payload;
+        showToast("Tiffin Added Successfully", "success");
       })
       .addCase(addTiffin.rejected, (state, action) => {
         state.addTiffinDataStatus = "failed";

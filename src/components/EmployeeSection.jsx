@@ -7,6 +7,8 @@ import {
   InputLabel,
   Select,
   FormHelperText,
+  Typography,
+  Box,
 } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -18,15 +20,18 @@ import {
   getEmployees,
   getVegtables,
 } from "../redux/thunks/allThunk";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { resetAddTiffinDataStatus } from "../redux/slices/allSlice";
 
 const EmployeeSection = () => {
   const dispatch = useDispatch();
+  const formikRef = useRef();
   const {
     employeesData,
     employeesDataStatus,
     vegetablesData,
     vegetablesDataStatus,
+    addTiffinDataStatus,
   } = useSelector((state) => state.all);
 
   console.log("vegetablesData::", vegetablesData);
@@ -60,20 +65,43 @@ const EmployeeSection = () => {
     dispatch(addTiffin(addTiffinPayload));
   };
 
-  // API Calls
+  // API Call for get Employees
   useEffect(() => {
     dispatch(getEmployees());
-    const todayDate = dayjs().format("YYYY-MM-DD");
-    const getVegetablesPayload = { date: todayDate };
-    dispatch(getVegtables(getVegetablesPayload));
   }, [dispatch]);
+
+  // API Call for get vegetables
+  useEffect(() => {
+    if (addTiffinDataStatus === "idle") {
+      const todayDate = dayjs()
+        .add(1, "day")
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toISOString();
+      const getVegetablesPayload = { date: todayDate };
+      dispatch(getVegtables(getVegetablesPayload));
+    }
+  }, [addTiffinDataStatus, dispatch]);
+
+  useEffect(() => {
+    if (addTiffinDataStatus === "success") {
+      formikRef.current.resetForm();
+      dispatch(resetAddTiffinDataStatus());
+    }
+  }, [addTiffinDataStatus, dispatch]);
 
   return (
     <Container>
+      <Typography pt={3} variant="h6" marginBottom={1}>
+        Select Your Tiffin
+      </Typography>
       <Formik
+        innerRef={formikRef}
         initialValues={{
           employeeId: "",
-          date: dayjs(),
+          date: dayjs().add(1, "day"),
           tiffinType: "",
           vegetableId: "",
           vegetableDateId: "",
@@ -93,6 +121,44 @@ const EmployeeSection = () => {
           // console.log("values::", values.date);
           return (
             <Form>
+              {/* Date Picker */}
+              <FormControl
+                fullWidth
+                margin="normal"
+                error={touched.date && Boolean(errors.date)}
+              >
+                <DatePicker
+                  label="Select Date"
+                  value={values.date}
+                  onChange={(newValue) => {
+                    setFieldValue("date", newValue);
+                    console.log("newValue:", newValue);
+
+                    const getVegetablesPayload = {
+                      date: dayjs(newValue)
+                        .hour(0)
+                        .minute(0)
+                        .second(0)
+                        .millisecond(0)
+                        .toISOString(),
+                    };
+                    dispatch(getVegtables(getVegetablesPayload));
+                  }}
+                  onBlur={() => {
+                    setFieldTouched("date", true);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={touched.date && Boolean(errors.date)}
+                    />
+                  )}
+                />
+                {touched.date && errors.date && (
+                  <FormHelperText>{errors.date}</FormHelperText>
+                )}
+              </FormControl>
+
               {/* Employee Name Dropdown */}
               <FormControl
                 fullWidth
@@ -116,38 +182,6 @@ const EmployeeSection = () => {
                 </Select>
                 {touched?.employeeId && errors?.employeeId && (
                   <FormHelperText>{errors.employeeId}</FormHelperText>
-                )}
-              </FormControl>
-              {/* Date Picker */}
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={touched.date && Boolean(errors.date)}
-              >
-                <DatePicker
-                  label="Select Date"
-                  value={values.date}
-                  onChange={(newValue) => {
-                    setFieldValue("date", newValue);
-                    console.log("newValue:", newValue);
-
-                    const getVegetablesPayload = {
-                      date: dayjs(newValue).format("YYYY-MM-DD"),
-                    };
-                    dispatch(getVegtables(getVegetablesPayload));
-                  }}
-                  onBlur={() => {
-                    setFieldTouched("date", true);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={touched.date && Boolean(errors.date)}
-                    />
-                  )}
-                />
-                {touched.date && errors.date && (
-                  <FormHelperText>{errors.date}</FormHelperText>
                 )}
               </FormControl>
 
@@ -207,6 +241,7 @@ const EmployeeSection = () => {
 
               {/* Submit Button */}
               <Button
+                sx={{ marginTop: 2 }}
                 type="submit"
                 variant="contained"
                 color="primary"
