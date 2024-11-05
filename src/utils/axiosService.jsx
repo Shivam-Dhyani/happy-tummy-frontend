@@ -23,7 +23,7 @@ const axiosService = {
       const response = await axiosInstance.get(url, { params });
       return response;
     } catch (error) {
-      console.error("Error in GET Request:", error);
+      throw error;
     }
   },
 
@@ -32,8 +32,7 @@ const axiosService = {
       const response = await axiosInstance.post(url, data);
       return response;
     } catch (error) {
-      // return error;
-      console.error("Error in POST Request:", error);
+      throw error;
     }
   },
 
@@ -42,7 +41,7 @@ const axiosService = {
       const response = await axiosInstance.put(url, data);
       return response;
     } catch (error) {
-      console.error("Error in PUT Request:", error);
+      throw error;
     }
   },
 
@@ -51,7 +50,7 @@ const axiosService = {
       const response = await axiosInstance.delete(url);
       return response;
     } catch (error) {
-      console.error("Error in DELETE Request:", error);
+      throw error;
     }
   },
 };

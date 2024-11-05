@@ -59,7 +59,7 @@ export const allSlice = createSlice({
       })
       .addCase(getEmployees.rejected, (state, action) => {
         state.employeesDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        showToast(action?.payload?.error || null, "error");
       })
       // INFO: Add New Employee API
       .addCase(addEmployee.pending, (state) => {
@@ -68,10 +68,13 @@ export const allSlice = createSlice({
       .addCase(addEmployee.fulfilled, (state, action) => {
         state.addEmployeeDataStatus = "success";
         state.addEmployeeData = action.payload;
+        state.employeesData.push(action?.payload?.employee);
+        showToast("Employee Added Successfully", "success");
       })
       .addCase(addEmployee.rejected, (state, action) => {
         state.addEmployeeDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        console.log("Add Employee Failed::", action?.payload);
+        showToast(action?.payload?.error || null, "error");
       })
       // INFO: Get Vegetable List by date API
       .addCase(getVegtables.pending, (state) => {
@@ -83,7 +86,7 @@ export const allSlice = createSlice({
       })
       .addCase(getVegtables.rejected, (state, action) => {
         state.vegetablesDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        showToast(action?.payload?.error || null, "error");
       })
       // INFO: Add New Vegetable API
       .addCase(addVegetable.pending, (state) => {
@@ -96,7 +99,7 @@ export const allSlice = createSlice({
       })
       .addCase(addVegetable.rejected, (state, action) => {
         state.addVegetableDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        showToast(action?.payload?.error || null, "error");
       })
       // INFO: Get Tiffins for date range or for single date API
       .addCase(getTiffins.pending, (state) => {
@@ -108,7 +111,7 @@ export const allSlice = createSlice({
       })
       .addCase(getTiffins.rejected, (state, action) => {
         state.tiffinsDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        showToast(action?.payload?.error || null, "error");
       })
       // INFO: Add New Tiffin for a specific date API
       .addCase(addTiffin.pending, (state) => {
@@ -121,7 +124,7 @@ export const allSlice = createSlice({
       })
       .addCase(addTiffin.rejected, (state, action) => {
         state.addTiffinDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        showToast(action?.payload?.error || null, "error");
       });
   },
 });

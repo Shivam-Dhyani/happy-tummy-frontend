@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,16 +12,19 @@ import {
   ListItemText,
   Typography,
   IconButton,
-  AppBar,
-  Toolbar,
+  CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { useDispatch, useSelector } from "react-redux";
+import { addEmployee, getEmployees } from "../redux/thunks/allThunk";
 
 const ManageEmployees = () => {
+  const dispatch = useDispatch();
+  const { employeesData, employeesDataStatus, addEmployeeDataStatus } =
+    useSelector((state) => state.all);
   const [open, setOpen] = useState(false); // State to handle dialog open/close
   const [employeeName, setEmployeeName] = useState(""); // State to manage the employee name
-  const [employees, setEmployees] = useState([]); // State to store list of employees
 
   // Function to open dialog
   const handleClickOpen = () => setOpen(true);
@@ -36,31 +39,25 @@ const ManageEmployees = () => {
   const handleAddEmployee = () => {
     if (employeeName.trim()) {
       // Only add non-empty employee names
-      setEmployees([...employees, employeeName]);
-      setEmployeeName(""); // Clear input field after adding
-      setOpen(false); // Close dialog
+      const addEmployeePayload = { name: employeeName };
+      dispatch(addEmployee(addEmployeePayload));
     }
   };
 
+  // API Call for get Employee List
+  useEffect(() => {
+    dispatch(getEmployees());
+  }, []);
+
+  useEffect(() => {
+    if (addEmployeeDataStatus === "success") {
+      setEmployeeName(""); // Clear input field after adding
+      setOpen(false); // Close dialog
+    }
+  }, [addEmployeeDataStatus]);
+
   return (
     <Box p={3}>
-      {/* Top App Bar for "Manage Employees" Section */}
-      {/* <AppBar position="static" color="primary" sx={{ marginBottom: 2 }}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Manage Employees
-          </Typography>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleClickOpen}
-            aria-label="add employee"
-          >
-            <AddIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar> */}
-
       {/* Employee List */}
       <Box>
         <Typography
@@ -82,11 +79,21 @@ const ManageEmployees = () => {
             <AddIcon />
           </IconButton>
         </Typography>
-        {employees.length > 0 ? (
+
+        {employeesDataStatus === "loading" ? (
+          <Box
+            height={400}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <CircularProgress size={50} />
+          </Box>
+        ) : employeesData.length > 0 ? (
           <List>
-            {employees.map((employee, index) => (
+            {employeesData.map((employee, index) => (
               <ListItem key={index} divider>
-                <ListItemText primary={employee} />
+                <ListItemText primary={employee?.name} />
               </ListItem>
             ))}
           </List>
@@ -117,6 +124,7 @@ const ManageEmployees = () => {
             type="text"
             fullWidth
             variant="outlined"
+            disabled={addEmployeeDataStatus === "loading"}
             value={employeeName}
             onChange={(e) => setEmployeeName(e.target.value)} // Handle input change
           />

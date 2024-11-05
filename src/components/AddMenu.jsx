@@ -24,8 +24,6 @@ const AddMenu = () => {
 
   const { addVegetableDataStatus } = useSelector((state) => state.all);
 
-  console.log("date::", addVegetableDataStatus);
-
   useEffect(() => {
     if (addVegetableDataStatus === "success") {
       formikRef.current.resetForm();
