@@ -62,8 +62,8 @@ export const getTiffins = createAsyncThunk(
     try {
       const response = await axiosService.get(
         payload?.end
-          ? `/vegetables?start=${payload?.start}&end=${payload?.end}`
-          : `/vegetables?start=${payload?.start}`
+          ? `/tiffin?start=${payload?.start}&end=${payload?.end}`
+          : `/tiffin?start=${payload?.start}`
       );
       return response?.data;
     } catch (error) {

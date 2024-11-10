@@ -73,7 +73,6 @@ export const allSlice = createSlice({
       })
       .addCase(addEmployee.rejected, (state, action) => {
         state.addEmployeeDataStatus = "failed";
-        console.log("Add Employee Failed::", action?.payload);
         showToast(action?.payload?.error || null, "error");
       })
       // INFO: Get Vegetable List by date API
