@@ -5,7 +5,8 @@ import {
   addTiffin,
   addVegetable,
   getEmployees,
-  getTiffins,
+  getTiffinsForDate,
+  getTiffinsForDateRange,
   getVegtables,
 } from "../thunks/allThunk";
 
@@ -18,8 +19,10 @@ const initialState = {
   vegetablesDataStatus: "idle",
   addVegetableData: [],
   addVegetableDataStatus: "idle",
-  tiffinsData: [],
-  tiffinsDataStatus: "idle",
+  tiffinsDateData: [],
+  tiffinsDateDataStatus: "idle",
+  tiffinsDateInRangeData: [],
+  tiffinsDateInRangeDataStatus: "idle",
   addTiffinData: [],
   addTiffinDataStatus: "idle",
 };
@@ -41,7 +44,7 @@ export const allSlice = createSlice({
       state.addVegetableDataStatus = "idle";
     },
     resetTiffinsDataStatus(state) {
-      state.tiffinsDataStatus = "idle";
+      state.tiffinsDateDataStatus = "idle";
     },
     resetAddTiffinDataStatus(state) {
       state.addTiffinDataStatus = "idle";
@@ -100,16 +103,28 @@ export const allSlice = createSlice({
         state.addVegetableDataStatus = "failed";
         showToast(action?.payload?.error || null, "error");
       })
-      // INFO: Get Tiffins for date range or for single date API
-      .addCase(getTiffins.pending, (state) => {
-        state.tiffinsDataStatus = "loading";
+      // INFO: Get Tiffins from for single date API
+      .addCase(getTiffinsForDate.pending, (state) => {
+        state.tiffinsDateDataStatus = "loading";
       })
-      .addCase(getTiffins.fulfilled, (state, action) => {
-        state.tiffinsDataStatus = "success";
-        state.tiffinsData = action.payload;
+      .addCase(getTiffinsForDate.fulfilled, (state, action) => {
+        state.tiffinsDateDataStatus = "success";
+        state.tiffinsDateData = action.payload;
       })
-      .addCase(getTiffins.rejected, (state, action) => {
-        state.tiffinsDataStatus = "failed";
+      .addCase(getTiffinsForDate.rejected, (state, action) => {
+        state.tiffinsDateDataStatus = "failed";
+        showToast(action?.payload?.error || null, "error");
+      })
+      // INFO: Get Tiffins from date range API
+      .addCase(getTiffinsForDateRange.pending, (state) => {
+        state.tiffinsDateInRangeDataStatus = "loading";
+      })
+      .addCase(getTiffinsForDateRange.fulfilled, (state, action) => {
+        state.tiffinsDateInRangeDataStatus = "success";
+        state.tiffinsDateInRangeData = action.payload;
+      })
+      .addCase(getTiffinsForDateRange.rejected, (state, action) => {
+        state.tiffinsDateInRangeDataStatus = "failed";
         showToast(action?.payload?.error || null, "error");
       })
       // INFO: Add New Tiffin for a specific date API

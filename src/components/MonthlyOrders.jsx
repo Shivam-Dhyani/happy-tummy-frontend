@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import {
   Box,
   Typography,
@@ -16,10 +18,8 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import dayjs from "dayjs";
-import { useDispatch } from "react-redux";
-import { getTiffins } from "../redux/thunks/allThunk";
-import utc from "dayjs/plugin/utc";
+import { useDispatch, useSelector } from "react-redux";
+import { getTiffinsForDateRange } from "../redux/thunks/allThunk";
 
 dayjs.extend(utc);
 
@@ -30,7 +30,7 @@ const MonthlyOrders = () => {
   const [messagePreview, setMessagePreview] = useState("");
   const [orderMonth, setOrderMonth] = useState(dayjs().subtract(1, "month"));
 
-  console.log("orderMonth::", orderMonth);
+  const {} = useSelector((state) => state.all);
 
   // Mock Data
   const monthlySummary = {
@@ -255,7 +255,7 @@ const MonthlyOrders = () => {
       end: orderMonth.endOf("month").utc().toISOString(),
     };
     console.log("getTiffinsPayload::", getTiffinsPayload);
-    dispatch(getTiffins(getTiffinsPayload));
+    dispatch(getTiffinsForDateRange(getTiffinsPayload));
   }, [orderMonth, dispatch]);
 
   const handleEmployeeClick = (employee) => {

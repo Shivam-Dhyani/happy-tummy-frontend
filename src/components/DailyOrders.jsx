@@ -19,7 +19,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
-import { getTiffins } from "../redux/thunks/allThunk";
+import { getTiffinsForDate } from "../redux/thunks/allThunk";
 
 const DailyOrders = () => {
   const dispatch = useDispatch();
@@ -27,9 +27,11 @@ const DailyOrders = () => {
   const [orderDate, setOrderDate] = useState(dayjs().add(1, "day"));
   const [messagePreview, setMessagePreview] = useState("");
 
-  const { tiffinsData, tiffinsDataStatus } = useSelector((state) => state.all);
+  const { tiffinsDateData, tiffinsDateDataStatus } = useSelector(
+    (state) => state.all
+  );
 
-  console.log("tiffinsData::", tiffinsData, tiffinsDataStatus);
+  console.log("tiffinsDateData::", tiffinsDateData, tiffinsDateDataStatus);
 
   // Mock Data for Daily/Monthly Orders
   const dailyOrders = [
@@ -51,7 +53,7 @@ const DailyOrders = () => {
 
   // const generateWhatsAppMessage = () => {
   //   // Group by tiffin type and vegetable name
-  //   const groupedOrders = _.groupBy(tiffinsData, "tiffinType");
+  //   const groupedOrders = _.groupBy(tiffinsDateData, "tiffinType");
   //   let message = "";
 
   //   Object.keys(groupedOrders).forEach((tiffinType) => {
@@ -78,7 +80,7 @@ const DailyOrders = () => {
 
   // const generateWhatsAppMessage = () => {
   //   // Group by tiffin type and vegetable
-  //   const groupedOrders = _.groupBy(tiffinsData, "tiffinType");
+  //   const groupedOrders = _.groupBy(tiffinsDateData, "tiffinType");
   //   const orderTypes = ["full", "half", "only-veggie"];
   //   const messageSections = orderTypes
   //     .map((type) => {
@@ -111,7 +113,7 @@ const DailyOrders = () => {
 
   const generateWhatsAppMessage = () => {
     // Get the order date from the first tiffin data
-    const orderDateUTC = tiffinsData[0]?.date;
+    const orderDateUTC = tiffinsDateData[0]?.date;
     if (!orderDateUTC) return;
 
     // Convert orderDate from UTC to IST using moment
@@ -120,7 +122,7 @@ const DailyOrders = () => {
       ?.format("DD MMM, YYYY");
 
     // Group by tiffin type and vegetable
-    const groupedOrders = _.groupBy(tiffinsData, "tiffinType");
+    const groupedOrders = _.groupBy(tiffinsDateData, "tiffinType");
     const orderTypes = ["full", "half", "only-veggie"];
     const messageSections = orderTypes
       .map((type) => {
@@ -170,7 +172,7 @@ const DailyOrders = () => {
       start: dateWithZeroTime.toISOString(),
     };
     console.log("getTiffinsPayload::", getTiffinsPayload);
-    dispatch(getTiffins(getTiffinsPayload));
+    dispatch(getTiffinsForDate(getTiffinsPayload));
   }, [orderDate, dispatch]);
 
   return (
@@ -186,7 +188,7 @@ const DailyOrders = () => {
       </Box>
 
       {/* Order List */}
-      {tiffinsDataStatus === "loading" ? (
+      {tiffinsDateDataStatus === "loading" ? (
         <Box
           height={400}
           display="flex"
@@ -195,9 +197,9 @@ const DailyOrders = () => {
         >
           <CircularProgress size={50} />
         </Box>
-      ) : tiffinsData.length > 0 ? (
+      ) : tiffinsDateData.length > 0 ? (
         <List>
-          {tiffinsData?.map((order, index) => (
+          {tiffinsDateData?.map((order, index) => (
             <React.Fragment key={index}>
               <ListItem>
                 <ListItemText
@@ -218,7 +220,7 @@ const DailyOrders = () => {
       )}
 
       {/* Button to Generate WhatsApp Message */}
-      {tiffinsData?.length ? (
+      {tiffinsDateData?.length ? (
         <Box
           sx={{
             marginTop: 2,
@@ -232,7 +234,7 @@ const DailyOrders = () => {
             color="primary"
             startIcon={<WhatsAppIcon />}
             onClick={generateWhatsAppMessage}
-            disabled={!tiffinsData?.length}
+            disabled={!tiffinsDateData?.length}
           >
             Generate WhatsApp Message
           </Button>

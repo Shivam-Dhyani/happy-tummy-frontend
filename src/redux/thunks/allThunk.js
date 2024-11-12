@@ -55,9 +55,26 @@ export const addVegetable = createAsyncThunk(
   }
 );
 
-// INFO: Get Tiffins for date range or for single date API
-export const getTiffins = createAsyncThunk(
-  "all/getTiffins",
+// INFO: Get Tiffins for single date API
+export const getTiffinsForDate = createAsyncThunk(
+  "all/getTiffinsForDate",
+  async (payload = { start: "", end: "" }, { rejectWithValue }) => {
+    try {
+      const response = await axiosService.get(
+        payload?.end
+          ? `/tiffin?start=${payload?.start}&end=${payload?.end}`
+          : `/tiffin?start=${payload?.start}`
+      );
+      return response?.data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+// INFO: Get Tiffins for date range API
+export const getTiffinsForDateRange = createAsyncThunk(
+  "all/getTiffinsForDateRange",
   async (payload = { start: "", end: "" }, { rejectWithValue }) => {
     try {
       const response = await axiosService.get(
