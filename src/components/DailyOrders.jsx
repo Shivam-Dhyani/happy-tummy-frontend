@@ -182,7 +182,6 @@ const DailyOrders = () => {
           label="Select Order Date"
           value={orderDate}
           onChange={(newValue) => setOrderDate(newValue)}
-          // renderInput={(params) => <TextField {...params} />}
         />
       </Box>
 
@@ -214,7 +213,7 @@ const DailyOrders = () => {
         </List>
       ) : (
         <Typography color="textSecondary">
-          No Order Selected for this date!
+          No Order Available for this date!
         </Typography>
       )}
 

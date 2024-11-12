@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -14,12 +14,23 @@ import {
   DialogActions,
   Divider,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
+import { getTiffins } from "../redux/thunks/allThunk";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const MonthlyOrders = () => {
+  const dispatch = useDispatch();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [messagePreview, setMessagePreview] = useState("");
+  const [orderMonth, setOrderMonth] = useState(dayjs().subtract(1, "month"));
+
+  console.log("orderMonth::", orderMonth);
 
   // Mock Data
   const monthlySummary = {
@@ -238,6 +249,15 @@ const MonthlyOrders = () => {
     },
   ];
 
+  useEffect(() => {
+    const getTiffinsPayload = {
+      start: orderMonth.startOf("month").utc().toISOString(),
+      end: orderMonth.endOf("month").utc().toISOString(),
+    };
+    console.log("getTiffinsPayload::", getTiffinsPayload);
+    dispatch(getTiffins(getTiffinsPayload));
+  }, [orderMonth, dispatch]);
+
   const handleEmployeeClick = (employee) => {
     setSelectedEmployee(employee);
     setOpenDialog(true);
@@ -266,9 +286,20 @@ const MonthlyOrders = () => {
   };
 
   return (
-    <Box p={3}>
+    <Box p={3} pt={1}>
+      {/* Select Order Date */}
+      <Box display="flex" justifyContent="center">
+        <DatePicker
+          sx={{ marginBottom: 2, width: "100%" }}
+          views={["month", "year"]}
+          label="Select Month"
+          value={orderMonth}
+          onChange={(newValue) => setOrderMonth(newValue)}
+        />
+      </Box>
+
       {/* Monthly Summary Card */}
-      <Card sx={{ mb: 3 }}>
+      <Card sx={{ mb: 1 }}>
         <CardContent>
           <Typography variant="h6">{monthlySummary.month} Summary</Typography>
           <Typography>Total Amount: ₹{monthlySummary.totalAmount}</Typography>
