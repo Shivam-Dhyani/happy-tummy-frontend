@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import moment from "moment-timezone";
 import {
   Box,
   Typography,
@@ -20,6 +21,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { useDispatch, useSelector } from "react-redux";
 import { getTiffinsForDateRange } from "../redux/thunks/allThunk";
+import {
+  calculateEmployeeOrders,
+  calculateTotalCost,
+  countUniqueDates,
+} from "../utils/tiffinConfig";
 
 dayjs.extend(utc);
 
@@ -30,15 +36,16 @@ const MonthlyOrders = () => {
   const [messagePreview, setMessagePreview] = useState("");
   const [orderMonth, setOrderMonth] = useState(dayjs().subtract(1, "month"));
 
-  const {} = useSelector((state) => state.all);
+  const { tiffinsDateInRangeData, tiffinsDateInRangeDataStatus } = useSelector(
+    (state) => state.all
+  );
 
-  // Mock Data
-  const monthlySummary = {
-    month: "October",
-    totalAmount: 15000,
-    totalTiffins: 300,
-    totalDays: 20,
-  };
+  console.log(
+    "Tiffin Range Data::",
+    tiffinsDateInRangeData,
+    tiffinsDateInRangeDataStatus,
+    calculateEmployeeOrders(tiffinsDateInRangeData)
+  );
 
   const employeeOrders = [
     {
@@ -301,40 +308,55 @@ const MonthlyOrders = () => {
       {/* Monthly Summary Card */}
       <Card sx={{ mb: 1 }}>
         <CardContent>
-          <Typography variant="h6">{monthlySummary.month} Summary</Typography>
-          <Typography>Total Amount: ₹{monthlySummary.totalAmount}</Typography>
-          <Typography>Total Tiffins: {monthlySummary.totalTiffins}</Typography>
+          <Typography variant="h6">
+            Summary:{" "}
+            {tiffinsDateInRangeData?.[0] &&
+              moment(tiffinsDateInRangeData?.[0]?.date)
+                ?.tz("Asia/Kolkata")
+                ?.format("MMMM YYYY")}
+          </Typography>
           <Typography>
-            Orders Placed on {monthlySummary.totalDays} Days
+            Total Amount: {calculateTotalCost(tiffinsDateInRangeData)}
+          </Typography>
+          <Typography>
+            Orders Placed on {countUniqueDates(tiffinsDateInRangeData)} Days
+          </Typography>
+          <Typography>
+            Total Tiffins: {tiffinsDateInRangeData.length}
           </Typography>
         </CardContent>
       </Card>
 
       {/* Employee Orders List */}
       <List>
-        {employeeOrders.map((employee, index) => (
-          <React.Fragment key={index}>
-            <ListItem button onClick={() => handleEmployeeClick(employee)}>
-              <ListItemText
-                primary={employee.name}
-                secondary={`Tiffins: ${employee.totalTiffins}, Total Price: ₹${employee.totalPrice}`}
-              />
-            </ListItem>
-            <Divider />
-          </React.Fragment>
-        ))}
+        {calculateEmployeeOrders(tiffinsDateInRangeData)?.map(
+          (employee, index) => (
+            <React.Fragment key={index}>
+              <ListItem
+                button="true"
+                onClick={() => handleEmployeeClick(employee)}
+              >
+                <ListItemText
+                  primary={employee?.name}
+                  secondary={`Tiffins: ${employee?.totalOrders}, Total Price: ₹${employee?.totalCost}`}
+                />
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          )
+        )}
       </List>
 
       {/* Dialog for Detailed Orders */}
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
         <DialogTitle>Orders for {selectedEmployee?.name}</DialogTitle>
         <DialogContent dividers>
-          {selectedEmployee?.orders.map((order, index) => (
+          {selectedEmployee?.orders?.map((order, index) => (
             <React.Fragment key={index}>
-              <Typography>{`Date: ${order.date}`}</Typography>
-              <Typography>{`Tiffin: ${order.tiffinType}`}</Typography>
-              <Typography>{`Vegetables: ${order.vegetables}`}</Typography>
-              <Typography>{`Cost: ₹${order.cost}`}</Typography>
+              <Typography>{`Date: ${order?.date}`}</Typography>
+              <Typography>{`Tiffin: ${order?.tiffinType}`}</Typography>
+              <Typography>{`Vegetables: ${order?.vegetables}`}</Typography>
+              <Typography>{`Cost: ₹${order?.cost}`}</Typography>
               <Divider sx={{ my: 1 }} />
             </React.Fragment>
           ))}

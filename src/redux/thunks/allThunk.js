@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axiosService from "../../utils/axiosService";
+import axiosService from "../../utils/axiosConfig";
 
 // INFO: Get All Employees List API
 export const getEmployees = createAsyncThunk(

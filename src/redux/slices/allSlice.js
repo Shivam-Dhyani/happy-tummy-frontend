@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { showToast } from "../../utils/toastService";
+import { showToast } from "../../utils/toastConfig";
 import {
   addEmployee,
   addTiffin,
