@@ -59,7 +59,7 @@ const AddMenu = () => {
   // Default tomorrow's date
   const initialValues = {
     date: dayjs().add(1, "day"),
-    vegetables: [{ name: "", price: "" }],
+    vegetables: [{ name: "", price: 40 }],
   };
 
   return (
@@ -85,6 +85,7 @@ const AddMenu = () => {
             {/* Date Picker */}
             <FormControl fullWidth margin="normal">
               <DatePicker
+                format="DD/MM/YYYY"
                 sx={{ marginBottom: 2 }}
                 label="Select Date"
                 value={values.date}
@@ -160,7 +161,7 @@ const AddMenu = () => {
                   <Button
                     variant="outlined"
                     startIcon={<AddCircleIcon />}
-                    onClick={() => push({ name: "", price: "" })}
+                    onClick={() => push({ name: "", price: 40 })}
                   >
                     Add Vegetable
                   </Button>

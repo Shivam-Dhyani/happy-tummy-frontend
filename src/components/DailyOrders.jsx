@@ -33,12 +33,6 @@ const DailyOrders = () => {
 
   console.log("tiffinsDateData::", tiffinsDateData, tiffinsDateDataStatus);
 
-  // Mock Data for Daily/Monthly Orders
-  const dailyOrders = [
-    { name: "John Doe", tiffinType: "Full", vegetables: "Potato, Tomato" },
-    { name: "Jane Smith", tiffinType: "Half", vegetables: "Spinach, Carrot" },
-  ];
-
   const generateWhatsAppMessage = () => {
     // Get the order date from the first tiffin data
     const orderDateUTC = tiffinsDateData[0]?.date;
@@ -108,6 +102,7 @@ const DailyOrders = () => {
       {/* Select Order Date */}
       <Box display="flex" justifyContent="center">
         <DatePicker
+          format="DD/MM/YYYY"
           sx={{ margin: 2, width: "90%" }}
           label="Select Order Date"
           value={orderDate}

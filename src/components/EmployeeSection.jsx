@@ -41,7 +41,7 @@ const EmployeeSection = () => {
     employeeId: Yup.string().required("Employee Name is required"),
     date: Yup.date().required("Date is required"),
     tiffinType: Yup.string().required("Tiffin Type is required"),
-    vegetableId: Yup.string().required("Vegetable selection is required"),
+    vegetableId: Yup.string().required("Vegetable Selection is required"),
   });
 
   // Dropdown options
@@ -128,6 +128,7 @@ const EmployeeSection = () => {
                 error={touched.date && Boolean(errors.date)}
               >
                 <DatePicker
+                  format="DD/MM/YYYY"
                   label="Select Date"
                   value={values.date}
                   onChange={(newValue) => {
@@ -230,7 +231,9 @@ const EmployeeSection = () => {
                 >
                   {vegetablesData[0]?.vegetables?.map((veg, idx) => (
                     <MenuItem key={idx} value={veg?._id}>
-                      {veg?.name}
+                      {values.tiffinType === "only-veggie"
+                        ? `${veg?.name} (₹${veg?.price})`
+                        : veg?.name}
                     </MenuItem>
                   ))}
                 </Select>
