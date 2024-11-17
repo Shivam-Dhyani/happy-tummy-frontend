@@ -62,7 +62,8 @@ export const allSlice = createSlice({
       })
       .addCase(getEmployees.rejected, (state, action) => {
         state.employeesDataStatus = "failed";
-        showToast(action?.payload?.error || null, "error");
+        state.employeesData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Add New Employee API
       .addCase(addEmployee.pending, (state) => {
@@ -76,7 +77,9 @@ export const allSlice = createSlice({
       })
       .addCase(addEmployee.rejected, (state, action) => {
         state.addEmployeeDataStatus = "failed";
-        showToast(action?.payload?.error || null, "error");
+        state.addEmployeeData = [];
+        state.employeesData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Get Vegetable List by date API
       .addCase(getVegtables.pending, (state) => {
@@ -88,7 +91,8 @@ export const allSlice = createSlice({
       })
       .addCase(getVegtables.rejected, (state, action) => {
         state.vegetablesDataStatus = "failed";
-        showToast(action?.payload?.error || null, "error");
+        state.vegetablesData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Add New Vegetable API
       .addCase(addVegetable.pending, (state) => {
@@ -101,7 +105,8 @@ export const allSlice = createSlice({
       })
       .addCase(addVegetable.rejected, (state, action) => {
         state.addVegetableDataStatus = "failed";
-        showToast(action?.payload?.error || null, "error");
+        state.addVegetableData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Get Tiffins from for single date API
       .addCase(getTiffinsForDate.pending, (state) => {
@@ -113,7 +118,8 @@ export const allSlice = createSlice({
       })
       .addCase(getTiffinsForDate.rejected, (state, action) => {
         state.tiffinsDateDataStatus = "failed";
-        showToast(action?.payload?.error || null, "error");
+        state.tiffinsDateData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Get Tiffins from date range API
       .addCase(getTiffinsForDateRange.pending, (state) => {
@@ -125,7 +131,8 @@ export const allSlice = createSlice({
       })
       .addCase(getTiffinsForDateRange.rejected, (state, action) => {
         state.tiffinsDateInRangeDataStatus = "failed";
-        showToast(action?.payload?.error || null, "error");
+        state.tiffinsDateInRangeData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Add New Tiffin for a specific date API
       .addCase(addTiffin.pending, (state) => {
@@ -138,7 +145,8 @@ export const allSlice = createSlice({
       })
       .addCase(addTiffin.rejected, (state, action) => {
         state.addTiffinDataStatus = "failed";
-        showToast(action?.payload?.error || null, "error");
+        state.addTiffinData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       });
   },
 });

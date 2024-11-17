@@ -130,7 +130,7 @@ const ManageEmployees = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">
+          <Button onClick={handleClose} color="secondary" variant="outlined">
             Cancel
           </Button>
           <Button

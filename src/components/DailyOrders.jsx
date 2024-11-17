@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import _ from "lodash";
-import moment from "moment-timezone";
 import {
   Box,
   Typography,
@@ -20,6 +19,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 import { getTiffinsForDate } from "../redux/thunks/allThunk";
+import { convertUTCDateToIST } from "../utils/dateConfig";
 
 const DailyOrders = () => {
   const dispatch = useDispatch();
@@ -39,9 +39,7 @@ const DailyOrders = () => {
     if (!orderDateUTC) return;
 
     // Convert orderDate from UTC to IST using moment
-    const orderDateIST = moment(orderDateUTC)
-      ?.tz("Asia/Kolkata")
-      ?.format("DD MMM, YYYY");
+    const orderDateIST = convertUTCDateToIST(orderDateUTC, "DD MMM, YYYY");
 
     // Group by tiffin type and vegetable
     const groupedOrders = _.groupBy(tiffinsDateData, "tiffinType");
@@ -121,23 +119,33 @@ const DailyOrders = () => {
           <CircularProgress size={50} />
         </Box>
       ) : tiffinsDateData.length > 0 ? (
-        <List>
-          {tiffinsDateData?.map((order, index) => (
-            <React.Fragment key={index}>
-              <ListItem>
-                <ListItemText
-                  primary={order?.employeeId?.name}
-                  secondary={`Tiffin: ${_.capitalize(
-                    order?.tiffinType
-                  )} | Vegetable: ${order?.vegetableId?.name}`}
-                />
-              </ListItem>
-              <Divider />
-            </React.Fragment>
-          ))}
-        </List>
+        <Box
+          sx={{
+            maxHeight: "38vh", // Adjust this height as per your UI needs
+            overflowY: "auto", // Enable vertical scrolling
+            border: "1px solid #ddd", // Optional: Add a border for better UI distinction
+            borderRadius: "4px",
+            padding: "8px",
+          }}
+        >
+          <List>
+            {tiffinsDateData?.map((order, index) => (
+              <React.Fragment key={index}>
+                <ListItem>
+                  <ListItemText
+                    primary={order?.employeeId?.name}
+                    secondary={`Tiffin: ${_.capitalize(
+                      order?.tiffinType
+                    )} | Vegetable: ${order?.vegetableId?.name}`}
+                  />
+                </ListItem>
+                <Divider />
+              </React.Fragment>
+            ))}
+          </List>
+        </Box>
       ) : (
-        <Typography color="textSecondary">
+        <Typography color="textSecondary" textAlign="center">
           No Order Available for this date!
         </Typography>
       )}
@@ -173,15 +181,20 @@ const DailyOrders = () => {
           <Typography component="pre">{messagePreview}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="secondary">
+          <Button
+            onClick={() => setOpenDialog(false)}
+            color="secondary"
+            variant="outlined"
+          >
             Cancel
           </Button>
           <Button
             onClick={handleSendMessage}
             color="primary"
+            variant="outlined"
             startIcon={<WhatsAppIcon />}
           >
-            Send via WhatsApp
+            Send Message
           </Button>
         </DialogActions>
       </Dialog>
