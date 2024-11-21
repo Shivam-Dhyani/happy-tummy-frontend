@@ -70,18 +70,79 @@ const MonthlyOrders = () => {
     setSelectedEmployee(null);
   };
 
+  // const generateWhatsAppMessage = () => {
+  //   if (selectedEmployee) {
+  //     const message = selectedEmployee.orders
+  //       .map(
+  //         (order) =>
+  //           `Date: ${order.date}, Tiffin: ${order.tiffinType}, Vegetables: ${order.vegetables}, Cost: ₹${order.cost}`
+  //       )
+  //       .join("\n");
+  //     setMessagePreview(message);
+  //     const encodedMessage = encodeURIComponent(
+  //       `Payment Details for ${selectedEmployee.name}:\n\n${message}`
+  //     );
+  //     const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+  //     window.open(whatsappUrl, "_blank");
+  //   }
+  // };
+
+  // const generateWhatsAppMessage = () => {
+  //   if (selectedEmployee) {
+  //     const messageHeader = `Payment Details for ${selectedEmployee.name}:\n\n`;
+  //     const ordersMessage = selectedEmployee.orderList
+  //       .map(
+  //         (order, index) =>
+  //           `Order ${index + 1}:\n` +
+  //           `- Date: ${convertUTCDateToIST(order?.date, "DD/MM/YYYY")}\n` +
+  //           `- Tiffin Type: ${_.capitalize(order?.tiffinType)}\n` +
+  //           `- Vegetables: ${order?.vegetableId?.name}\n` +
+  //           `- Cost: ₹${calculateTiffinCost(order)}\n`
+  //       )
+  //       .join("\n");
+  //     const totalCostMessage = `\nTotal Cost: ₹${selectedEmployee.totalCost}`;
+  //     const fullMessage = messageHeader + ordersMessage + totalCostMessage;
+
+  //     setMessagePreview(fullMessage);
+
+  //     const encodedMessage = encodeURIComponent(fullMessage);
+  //     const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+  //     window.open(whatsappUrl, "_blank");
+  //   }
+  // };
+
   const generateWhatsAppMessage = () => {
     if (selectedEmployee) {
-      const message = selectedEmployee.orders
+      // Emoji in Unicode format
+      const downArrowEmoji = "\u{1F447}";
+
+      // Summary section in bold
+      const summaryMessage =
+        `*Payment Summary for ${selectedEmployee.name}:*\n\n` +
+        `*- Month: ${moment(orderMonth).format("MMMM YYYY")}*\n\n` +
+        `*- Total Cost: ₹${selectedEmployee.totalCost}*\n\n` +
+        `*- Total Orders: ${selectedEmployee.orderList.length}*\n\n\n` +
+        `*Order List:* ${downArrowEmoji}\n\n`; // Use Unicode emoji here
+
+      // Orders list in normal font
+      const ordersMessage = selectedEmployee.orderList
         .map(
-          (order) =>
-            `Date: ${order.date}, Tiffin: ${order.tiffinType}, Vegetables: ${order.vegetables}, Cost: ₹${order.cost}`
+          (order, index) =>
+            `Order ${index + 1}:\n` +
+            `- Date: ${convertUTCDateToIST(order?.date, "DD/MM/YYYY")}\n` +
+            `- Tiffin Type: ${_.capitalize(order?.tiffinType)}\n` +
+            `- Vegetables: ${order?.vegetableId?.name}\n` +
+            `- Cost: ₹${calculateTiffinCost(order)}\n`
         )
         .join("\n");
-      setMessagePreview(message);
-      const encodedMessage = encodeURIComponent(
-        `Payment Details for ${selectedEmployee.name}:\n\n${message}`
-      );
+
+      // Combine summary and orders
+      const fullMessage = summaryMessage + ordersMessage;
+
+      setMessagePreview(fullMessage);
+
+      // Encode the message and open WhatsApp
+      const encodedMessage = encodeURIComponent(fullMessage);
       const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
       window.open(whatsappUrl, "_blank");
     }
@@ -170,40 +231,6 @@ const MonthlyOrders = () => {
       )}
 
       {/* Dialog for Detailed Orders */}
-      {/* <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
-        <DialogTitle>Orders for {selectedEmployee?.name}</DialogTitle>
-        <DialogContent dividers>
-          {selectedEmployee?.orderList?.map((order, index) => (
-            <React.Fragment key={index}>
-              <Typography>{`Date: ${convertUTCDateToIST(
-                order?.date,
-                "DD/MM/YYYY"
-              )}`}</Typography>
-              <Typography>{`Tiffin Type: ${_.capitalize(
-                order?.tiffinType
-              )}`}</Typography>
-              <Typography>{`Vegetables: ${order?.vegetableId?.name}`}</Typography>
-              <Typography>{`Cost: ₹${calculateTiffinCost(order)}`}</Typography>
-              <Divider sx={{ my: 1 }} />
-            </React.Fragment>
-          ))}
-          <Typography component="h1">{`Total Cost: ₹${selectedEmployee?.totalCost}`}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="secondary">
-            Close
-          </Button>
-          <Button
-            onClick={generateWhatsAppMessage}
-            color="primary"
-            startIcon={<WhatsAppIcon />}
-          >
-            Send Payment Reminder via WhatsApp
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-
-      {/* Dialog for Detailed Orders */}
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
         <DialogTitle>Orders for {selectedEmployee?.name}</DialogTitle>
         <DialogContent dividers>
@@ -224,8 +251,8 @@ const MonthlyOrders = () => {
         </DialogContent>
         <Box
           sx={{
-            borderTop: "2px solid #ddd", // Optional: Add a border for separation
-            borderBottom: "2px solid #ddd", // Optional: Add a border for separation
+            borderTop: "2px solid #ddd", // Optional: Add a border top for separation
+            borderBottom: "2px solid #ddd", // Optional: Add a border bottom for separation
             padding: "4px", // Add padding for better visibility
             position: "sticky", // Stick to the bottom
             bottom: 0, // Ensure it's at the bottom

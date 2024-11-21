@@ -41,7 +41,7 @@ const HappyTummyApp = () => {
             sx={{ flexGrow: 1 }}
             onClick={() => window.location.reload()}
           >
-            Happy Tummy
+            {role ? `Happy Tummy (${role})` : `Happy Tummy`}
           </Typography>
           <div>
             <IconButton

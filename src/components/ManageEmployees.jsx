@@ -39,7 +39,7 @@ const ManageEmployees = () => {
   const handleAddEmployee = () => {
     if (employeeName.trim()) {
       // Only add non-empty employee names
-      const addEmployeePayload = { name: employeeName };
+      const addEmployeePayload = { name: employeeName.trim() };
       dispatch(addEmployee(addEmployeePayload));
     }
   };
@@ -137,6 +137,7 @@ const ManageEmployees = () => {
             onClick={handleAddEmployee}
             color="primary"
             variant="contained"
+            disabled={!employeeName.trim()}
           >
             Add
           </Button>

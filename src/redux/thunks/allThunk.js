@@ -72,7 +72,7 @@ export const getTiffinsForDate = createAsyncThunk(
   }
 );
 
-// INFO: Get Tiffins for date range API
+// INFO: Get Tiffins for date in range API
 export const getTiffinsForDateRange = createAsyncThunk(
   "all/getTiffinsForDateRange",
   async (payload = { start: "", end: "" }, { rejectWithValue }) => {
@@ -89,7 +89,7 @@ export const getTiffinsForDateRange = createAsyncThunk(
   }
 );
 
-// INFO: Add New Tiffin for a specific date API
+// INFO: Add a New Tiffin for a specific date API
 export const addTiffin = createAsyncThunk(
   "all/addTiffin",
   async (payload, { rejectWithValue }) => {

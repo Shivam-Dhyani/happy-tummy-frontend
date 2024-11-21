@@ -77,8 +77,6 @@ export const allSlice = createSlice({
       })
       .addCase(addEmployee.rejected, (state, action) => {
         state.addEmployeeDataStatus = "failed";
-        state.addEmployeeData = [];
-        state.employeesData = [];
         showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Get Vegetable List by date API
@@ -105,7 +103,6 @@ export const allSlice = createSlice({
       })
       .addCase(addVegetable.rejected, (state, action) => {
         state.addVegetableDataStatus = "failed";
-        state.addVegetableData = [];
         showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Get Tiffins from for single date API
@@ -145,7 +142,6 @@ export const allSlice = createSlice({
       })
       .addCase(addTiffin.rejected, (state, action) => {
         state.addTiffinDataStatus = "failed";
-        state.addTiffinData = [];
         showToast(action?.payload?.error || "Network Issue", "error");
       });
   },
