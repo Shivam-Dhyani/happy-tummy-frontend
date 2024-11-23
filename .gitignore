@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# dotenv files, exclude environment variables for production safety
+.env
+.env.test
+.env.production
