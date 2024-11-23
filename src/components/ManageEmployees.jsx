@@ -15,9 +15,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
-import { addEmployee, getEmployees } from "../redux/thunks/allThunk";
+import { addEmployee } from "../redux/thunks/allThunk";
 
 const ManageEmployees = () => {
   const dispatch = useDispatch();
@@ -43,11 +42,6 @@ const ManageEmployees = () => {
       dispatch(addEmployee(addEmployeePayload));
     }
   };
-
-  // API Call for get Employee List
-  useEffect(() => {
-    dispatch(getEmployees());
-  }, []);
 
   useEffect(() => {
     if (addEmployeeDataStatus === "success") {
@@ -75,6 +69,7 @@ const ManageEmployees = () => {
             color="primary"
             onClick={handleClickOpen}
             aria-label="add employee"
+            disabled={employeesDataStatus === "loading"}
           >
             <AddIcon />
           </IconButton>
@@ -90,7 +85,15 @@ const ManageEmployees = () => {
             <CircularProgress size={50} />
           </Box>
         ) : employeesData.length > 0 ? (
-          <List>
+          <List
+            sx={{
+              height: "65vh", // Adjust this height as per your UI needs
+              overflowY: "auto", // Enable vertical scrolling
+              border: "1px solid #ddd", // Optional: Add a border for better UI distinction
+              borderRadius: "4px",
+              padding: "8px",
+            }}
+          >
             {employeesData.map((employee, index) => (
               <ListItem key={index} divider>
                 <ListItemText primary={employee?.name} />
@@ -103,19 +106,9 @@ const ManageEmployees = () => {
       </Box>
 
       {/* Dialog for adding employee */}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        <DialogTitle>
-          Add Employee
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleClose}
-            sx={{ position: "absolute", right: 8, top: 8 }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
+      <Dialog open={open} onClose={handleClose} fullWidth>
+        <DialogTitle bgcolor="#F0F0F0">Add Employee</DialogTitle>
+        <DialogContent dividers>
           <TextField
             autoFocus
             margin="dense"
@@ -137,8 +130,15 @@ const ManageEmployees = () => {
             onClick={handleAddEmployee}
             color="primary"
             variant="contained"
-            disabled={!employeeName.trim()}
+            disabled={
+              !employeeName.trim() || addEmployeeDataStatus === "loading"
+            }
           >
+            {addEmployeeDataStatus === "loading" && (
+              <Box mr={1} display="flex" justifyContent="center">
+                <CircularProgress color="secondary" size={20} />
+              </Box>
+            )}
             Add
           </Button>
         </DialogActions>

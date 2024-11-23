@@ -9,6 +9,7 @@ import {
   FormHelperText,
   Typography,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -133,8 +134,6 @@ const EmployeeSection = () => {
                   value={values.date}
                   onChange={(newValue) => {
                     setFieldValue("date", newValue);
-                    console.log("newValue:", newValue);
-
                     const getVegetablesPayload = {
                       date: dayjs(newValue)
                         .hour(0)
@@ -160,98 +159,136 @@ const EmployeeSection = () => {
                 )}
               </FormControl>
 
-              {/* Employee Name Dropdown */}
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={touched.employeeId && Boolean(errors.employeeId)}
-              >
-                <InputLabel id="employee-name-label">Employee Name</InputLabel>
-                <Select
-                  labelId="employee-name-label"
-                  name="employeeId"
-                  value={values.employeeId}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  disabled={employeesDataStatus !== "success"}
+              {employeesDataStatus === "loading" ||
+              vegetablesDataStatus === "loading" ? (
+                <Box
+                  height={400}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
                 >
-                  {employeesData.map((employee, idx) => (
-                    <MenuItem key={idx} value={employee?._id}>
-                      {employee?.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {touched?.employeeId && errors?.employeeId && (
-                  <FormHelperText>{errors.employeeId}</FormHelperText>
-                )}
-              </FormControl>
+                  <CircularProgress size={50} />
+                </Box>
+              ) : (
+                <>
+                  {/* Employee Name Dropdown */}
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    error={touched.employeeId && Boolean(errors.employeeId)}
+                  >
+                    <InputLabel
+                      id="employee-name-label"
+                      sx={{ backgroundColor: "white", paddingX: "5px" }}
+                    >
+                      Employee Name
+                    </InputLabel>
+                    <Select
+                      labelId="employee-name-label"
+                      name="employeeId"
+                      value={values.employeeId}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      disabled={employeesDataStatus !== "success"}
+                    >
+                      {employeesData.map((employee, idx) => (
+                        <MenuItem key={idx} value={employee?._id}>
+                          {employee?.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {touched?.employeeId && errors?.employeeId && (
+                      <FormHelperText>{errors.employeeId}</FormHelperText>
+                    )}
+                  </FormControl>
 
-              {/* Tiffin Type Dropdown */}
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={touched.tiffinType && Boolean(errors.tiffinType)}
-              >
-                <InputLabel id="tiffin-type-label">Tiffin Type</InputLabel>
-                <Select
-                  labelId="tiffin-type-label"
-                  name="tiffinType"
-                  value={values.tiffinType}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                >
-                  {tiffinTypes.map((type, idx) => (
-                    <MenuItem key={idx} value={type?.value}>
-                      {type?.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {touched.tiffinType && errors.tiffinType && (
-                  <FormHelperText>{errors.tiffinType}</FormHelperText>
-                )}
-              </FormControl>
+                  {/* Tiffin Type Dropdown */}
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    error={touched.tiffinType && Boolean(errors.tiffinType)}
+                  >
+                    <InputLabel
+                      id="tiffin-type-label"
+                      sx={{ backgroundColor: "white", paddingX: "5px" }}
+                    >
+                      Tiffin Type
+                    </InputLabel>
+                    <Select
+                      labelId="tiffin-type-label"
+                      name="tiffinType"
+                      value={values.tiffinType}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    >
+                      {tiffinTypes.map((type, idx) => (
+                        <MenuItem key={idx} value={type?.value}>
+                          {type?.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {touched.tiffinType && errors.tiffinType && (
+                      <FormHelperText>{errors.tiffinType}</FormHelperText>
+                    )}
+                  </FormControl>
 
-              {/* Vegetable Dropdown */}
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={touched.vegetableId && Boolean(errors.vegetableId)}
-              >
-                <InputLabel id="vegetable-label">Vegetable</InputLabel>
-                <Select
-                  labelId="vegetable-label"
-                  name="vegetableId"
-                  value={values.vegetableId}
-                  onChange={(newValue) => {
-                    handleChange(newValue);
-                    setFieldValue("vegetableDateId", vegetablesData[0]?._id);
-                  }}
-                  onBlur={handleBlur}
-                  disabled={vegetablesDataStatus !== "success"}
-                >
-                  {vegetablesData[0]?.vegetables?.map((veg, idx) => (
-                    <MenuItem key={idx} value={veg?._id}>
-                      {values.tiffinType === "only-veggie"
-                        ? `${veg?.name} (₹${veg?.price})`
-                        : veg?.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {touched.vegetableId && errors.vegetableId && (
-                  <FormHelperText>{errors.vegetableId}</FormHelperText>
-                )}
-              </FormControl>
+                  {/* Vegetable Dropdown */}
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    error={touched.vegetableId && Boolean(errors.vegetableId)}
+                  >
+                    <InputLabel
+                      id="vegetable-label"
+                      sx={{ backgroundColor: "white", paddingX: "5px" }}
+                    >
+                      Vegetable
+                    </InputLabel>
+                    <Select
+                      labelId="vegetable-label"
+                      name="vegetableId"
+                      value={values.vegetableId}
+                      onChange={(newValue) => {
+                        handleChange(newValue);
+                        setFieldValue(
+                          "vegetableDateId",
+                          vegetablesData[0]?._id
+                        );
+                      }}
+                      onBlur={handleBlur}
+                      disabled={vegetablesDataStatus !== "success"}
+                    >
+                      {vegetablesData[0]?.vegetables?.map((veg, idx) => (
+                        <MenuItem key={idx} value={veg?._id}>
+                          {values.tiffinType === "only-veggie"
+                            ? `${veg?.name} (₹${veg?.price})`
+                            : veg?.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {touched.vegetableId && errors.vegetableId && (
+                      <FormHelperText>{errors.vegetableId}</FormHelperText>
+                    )}
+                  </FormControl>
 
-              {/* Submit Button */}
-              <Button
-                sx={{ marginTop: 2 }}
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-              >
-                Submit Order
-              </Button>
+                  {/* Submit Button */}
+                  <Button
+                    sx={{ marginTop: 2 }}
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    disabled={addTiffinDataStatus === "loading"}
+                  >
+                    {addTiffinDataStatus === "loading" && (
+                      <Box mr={1} display="flex" justifyContent="center">
+                        <CircularProgress color="secondary" size={20} />
+                      </Box>
+                    )}
+                    Submit Order
+                  </Button>
+                </>
+              )}
             </Form>
           );
         }}

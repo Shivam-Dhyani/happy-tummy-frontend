@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 import { getTiffinsForDate } from "../redux/thunks/allThunk";
 import { convertUTCDateToIST } from "../utils/dateConfig";
+import { handleSendMessage } from "../utils/whatsappConfig";
 
 const DailyOrders = () => {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ const DailyOrders = () => {
     // Group by tiffin type and vegetable
     const groupedOrders = _.groupBy(tiffinsDateData, "tiffinType");
     const orderTypes = ["full", "half", "only-veggie"];
+
     const messageSections = orderTypes
       .map((type) => {
         const orders = groupedOrders[type] || [];
@@ -74,12 +76,6 @@ const DailyOrders = () => {
 
     setMessagePreview(finalMessage);
     setOpenDialog(true);
-  };
-
-  const handleSendMessage = () => {
-    const encodedMessage = encodeURIComponent(messagePreview);
-    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-    window.open(whatsappUrl, "_blank");
   };
 
   useEffect(() => {
@@ -118,7 +114,7 @@ const DailyOrders = () => {
         >
           <CircularProgress size={50} />
         </Box>
-      ) : tiffinsDateData.length > 0 ? (
+      ) : tiffinsDateData.length ? (
         <Box
           sx={{
             maxHeight: "38vh", // Adjust this height as per your UI needs
@@ -151,7 +147,7 @@ const DailyOrders = () => {
       )}
 
       {/* Button to Generate WhatsApp Message */}
-      {tiffinsDateData?.length ? (
+      {tiffinsDateData?.length && tiffinsDateDataStatus === "success" ? (
         <Box
           sx={{
             marginTop: 2,
@@ -176,8 +172,8 @@ const DailyOrders = () => {
 
       {/* WhatsApp Message Preview Dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>WhatsApp Message Preview</DialogTitle>
-        <DialogContent>
+        <DialogTitle bgcolor="#F0F0F0">WhatsApp Message Preview</DialogTitle>
+        <DialogContent dividers>
           <Typography component="pre">{messagePreview}</Typography>
         </DialogContent>
         <DialogActions>
@@ -189,7 +185,7 @@ const DailyOrders = () => {
             Cancel
           </Button>
           <Button
-            onClick={handleSendMessage}
+            onClick={() => handleSendMessage(messagePreview)}
             color="primary"
             variant="outlined"
             startIcon={<WhatsAppIcon />}

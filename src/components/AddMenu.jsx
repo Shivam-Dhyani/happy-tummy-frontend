@@ -10,6 +10,7 @@ import {
   TextField,
   FormControl,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -176,7 +177,13 @@ const AddMenu = () => {
                 color="primary"
                 fullWidth
                 type="submit"
+                disabled={addVegetableDataStatus === "loading"}
               >
+                {addVegetableDataStatus === "loading" && (
+                  <Box mr={1} display="flex" justifyContent="center">
+                    <CircularProgress color="secondary" size={20} />
+                  </Box>
+                )}
                 Save Menu
               </Button>
             </Box>

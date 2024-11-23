@@ -11,10 +11,13 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import ManagerSection from "./ManagerSection";
 import LandingPage from "./LandingPage";
 import EmployeeSection from "./EmployeeSection";
+import { useSelector } from "react-redux";
 
 const HappyTummyApp = () => {
   const [role, setRole] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const { employeesData } = useSelector((state) => state.all);
 
   // Function to handle menu open/close
   const handleMenu = (event) => {
@@ -72,7 +75,10 @@ const HappyTummyApp = () => {
               <MenuItem onClick={() => handleRoleSelect("Manager")}>
                 Manager
               </MenuItem>
-              <MenuItem onClick={() => handleRoleSelect("Employee")}>
+              <MenuItem
+                onClick={() => handleRoleSelect("Employee")}
+                disabled={!employeesData?.length}
+              >
                 Employee
               </MenuItem>
             </Menu>

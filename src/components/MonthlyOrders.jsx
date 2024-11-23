@@ -30,14 +30,13 @@ import {
   countUniqueDates,
 } from "../utils/tiffinConfig";
 import { convertUTCDateToIST } from "../utils/dateConfig";
-
+import { handleSendMessage } from "../utils/whatsappConfig";
 dayjs.extend(utc);
 
 const MonthlyOrders = () => {
   const dispatch = useDispatch();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [messagePreview, setMessagePreview] = useState("");
   const [orderMonth, setOrderMonth] = useState(dayjs().subtract(1, "month"));
 
   const { tiffinsDateInRangeData, tiffinsDateInRangeDataStatus } = useSelector(
@@ -70,59 +69,21 @@ const MonthlyOrders = () => {
     setSelectedEmployee(null);
   };
 
-  // const generateWhatsAppMessage = () => {
-  //   if (selectedEmployee) {
-  //     const message = selectedEmployee.orders
-  //       .map(
-  //         (order) =>
-  //           `Date: ${order.date}, Tiffin: ${order.tiffinType}, Vegetables: ${order.vegetables}, Cost: ₹${order.cost}`
-  //       )
-  //       .join("\n");
-  //     setMessagePreview(message);
-  //     const encodedMessage = encodeURIComponent(
-  //       `Payment Details for ${selectedEmployee.name}:\n\n${message}`
-  //     );
-  //     const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-  //     window.open(whatsappUrl, "_blank");
-  //   }
-  // };
-
-  // const generateWhatsAppMessage = () => {
-  //   if (selectedEmployee) {
-  //     const messageHeader = `Payment Details for ${selectedEmployee.name}:\n\n`;
-  //     const ordersMessage = selectedEmployee.orderList
-  //       .map(
-  //         (order, index) =>
-  //           `Order ${index + 1}:\n` +
-  //           `- Date: ${convertUTCDateToIST(order?.date, "DD/MM/YYYY")}\n` +
-  //           `- Tiffin Type: ${_.capitalize(order?.tiffinType)}\n` +
-  //           `- Vegetables: ${order?.vegetableId?.name}\n` +
-  //           `- Cost: ₹${calculateTiffinCost(order)}\n`
-  //       )
-  //       .join("\n");
-  //     const totalCostMessage = `\nTotal Cost: ₹${selectedEmployee.totalCost}`;
-  //     const fullMessage = messageHeader + ordersMessage + totalCostMessage;
-
-  //     setMessagePreview(fullMessage);
-
-  //     const encodedMessage = encodeURIComponent(fullMessage);
-  //     const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-  //     window.open(whatsappUrl, "_blank");
-  //   }
-  // };
-
   const generateWhatsAppMessage = () => {
     if (selectedEmployee) {
-      // Emoji in Unicode format
-      const downArrowEmoji = "\u{1F447}";
+      // Symbols for box drawing
+      const topBorder = `┌────────────────────────┐\n`;
+      const bottomBorder = `└────────────────────────┘\n`;
 
-      // Summary section in bold
+      // Summary section with  top & bottom borders
       const summaryMessage =
-        `*Payment Summary for ${selectedEmployee.name}:*\n\n` +
-        `*- Month: ${moment(orderMonth).format("MMMM YYYY")}*\n\n` +
-        `*- Total Cost: ₹${selectedEmployee.totalCost}*\n\n` +
-        `*- Total Orders: ${selectedEmployee.orderList.length}*\n\n\n` +
-        `*Order List:* ${downArrowEmoji}\n\n`; // Use Unicode emoji here
+        `${topBorder}` +
+        `   *Tiffin Summary for ${selectedEmployee.name}*\n\n` +
+        `   *Month: ${moment(orderMonth).format("MMMM YYYY")}*\n\n` +
+        `   *Total Cost: ₹${selectedEmployee.totalCost}*\n\n` +
+        `   *Total Tiffin Ordered: ${selectedEmployee.orderList.length}*\n` +
+        `${bottomBorder}\n\n` +
+        `*Order List:* \n\n`;
 
       // Orders list in normal font
       const ordersMessage = selectedEmployee.orderList
@@ -139,12 +100,7 @@ const MonthlyOrders = () => {
       // Combine summary and orders
       const fullMessage = summaryMessage + ordersMessage;
 
-      setMessagePreview(fullMessage);
-
-      // Encode the message and open WhatsApp
-      const encodedMessage = encodeURIComponent(fullMessage);
-      const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-      window.open(whatsappUrl, "_blank");
+      handleSendMessage(fullMessage);
     }
   };
 
@@ -232,7 +188,9 @@ const MonthlyOrders = () => {
 
       {/* Dialog for Detailed Orders */}
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
-        <DialogTitle>Orders for {selectedEmployee?.name}</DialogTitle>
+        <DialogTitle bgcolor="#F0F0F0">
+          Orders for {selectedEmployee?.name}
+        </DialogTitle>
         <DialogContent dividers>
           {selectedEmployee?.orderList?.map((order, index) => (
             <React.Fragment key={index}>
@@ -256,8 +214,8 @@ const MonthlyOrders = () => {
             padding: "4px", // Add padding for better visibility
             position: "sticky", // Stick to the bottom
             bottom: 0, // Ensure it's at the bottom
-            backgroundColor: "white", // Keep it visually distinct
             zIndex: 1, // Ensure it stays above scrollable content
+            backgroundColor: "#F0F0F0",
           }}
         >
           <Typography
