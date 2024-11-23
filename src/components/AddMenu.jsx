@@ -1,3 +1,8 @@
+import { useRef } from "react";
+import * as Yup from "yup";
+import dayjs from "dayjs";
+import { useDispatch, useSelector } from "react-redux";
+import { Formik, FieldArray, Form } from "formik";
 import {
   Box,
   Typography,
@@ -5,15 +10,28 @@ import {
   TextField,
   FormControl,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Formik, FieldArray, Form } from "formik";
-import * as Yup from "yup";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { addVegetable } from "../redux/thunks/allThunk";
+import { useEffect } from "react";
+import { resetAddVegetableDataStatus } from "../redux/slices/allSlice";
 
 const AddMenu = () => {
+  const dispatch = useDispatch();
+  const formikRef = useRef();
+
+  const { addVegetableDataStatus } = useSelector((state) => state.all);
+
+  useEffect(() => {
+    if (addVegetableDataStatus === "success") {
+      formikRef.current.resetForm();
+      dispatch(resetAddVegetableDataStatus());
+    }
+  }, [addVegetableDataStatus, dispatch]);
+
   // Validation Schema using Yup
   const validationSchema = Yup.object().shape({
     date: Yup.date().required("Date is required"),
@@ -25,29 +43,50 @@ const AddMenu = () => {
     ),
   });
 
+  const handleSubmitMenu = (values) => {
+    const dateWithZeroTime = dayjs(values.date)
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0);
+    const addMenuPayload = {
+      ...values,
+      date: dateWithZeroTime.toISOString(),
+    };
+    console.log("addMenuPayload::", addMenuPayload);
+    dispatch(addVegetable(addMenuPayload));
+  };
+
   // Default tomorrow's date
   const initialValues = {
     date: dayjs().add(1, "day"),
-    vegetables: [{ name: "", price: "" }],
+    vegetables: [{ name: "", price: 40 }],
   };
 
   return (
     <Box p={3}>
       <Typography variant="h6" marginBottom={2}>
-        Set Menu
+        Add Menu
       </Typography>
       <Formik
+        innerRef={formikRef}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log("Form Data", values);
-        }}
+        onSubmit={handleSubmitMenu}
       >
-        {({ values, errors, touched, setFieldValue }) => (
+        {({
+          values,
+          errors,
+          touched,
+          setFieldValue,
+          handleChange,
+          handleBlur,
+        }) => (
           <Form>
             {/* Date Picker */}
             <FormControl fullWidth margin="normal">
               <DatePicker
+                format="DD/MM/YYYY"
                 sx={{ marginBottom: 2 }}
                 label="Select Date"
                 value={values.date}
@@ -79,14 +118,16 @@ const AddMenu = () => {
                           label={`Vegetable ${index + 1}`}
                           name={`vegetables[${index}].name`}
                           value={vegetable.name}
-                          onChange={(e) =>
-                            setFieldValue(
-                              `vegetables[${index}].name`,
-                              e.target.value
-                            )
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          error={
+                            touched.vegetables?.[index]?.name &&
+                            Boolean(errors.vegetables?.[index]?.name)
                           }
-                          error={Boolean(errors.vegetables?.[index]?.name)}
-                          helperText={errors.vegetables?.[index]?.name}
+                          helperText={
+                            touched.vegetables?.[index]?.name &&
+                            errors.vegetables?.[index]?.name
+                          }
                         />
                       </FormControl>
 
@@ -96,20 +137,24 @@ const AddMenu = () => {
                           type="number"
                           name={`vegetables[${index}].price`}
                           value={vegetable.price}
-                          onChange={(e) =>
-                            setFieldValue(
-                              `vegetables[${index}].price`,
-                              e.target.value
-                            )
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          error={
+                            touched.vegetables?.[index]?.price &&
+                            Boolean(errors.vegetables?.[index]?.price)
                           }
-                          error={Boolean(errors.vegetables?.[index]?.price)}
-                          helperText={errors.vegetables?.[index]?.price}
+                          helperText={
+                            touched.vegetables?.[index]?.price &&
+                            errors.vegetables?.[index]?.price
+                          }
                         />
                       </FormControl>
 
-                      <IconButton onClick={() => remove(index)} color="error">
-                        <DeleteIcon />
-                      </IconButton>
+                      {values?.vegetables?.length > 1 && (
+                        <IconButton onClick={() => remove(index)} color="error">
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
                     </Box>
                   ))}
 
@@ -117,7 +162,7 @@ const AddMenu = () => {
                   <Button
                     variant="outlined"
                     startIcon={<AddCircleIcon />}
-                    onClick={() => push({ name: "", price: "" })}
+                    onClick={() => push({ name: "", price: 40 })}
                   >
                     Add Vegetable
                   </Button>
@@ -132,7 +177,13 @@ const AddMenu = () => {
                 color="primary"
                 fullWidth
                 type="submit"
+                disabled={addVegetableDataStatus === "loading"}
               >
+                {addVegetableDataStatus === "loading" && (
+                  <Box mr={1} display="flex" justifyContent="center">
+                    <CircularProgress color="secondary" size={20} />
+                  </Box>
+                )}
                 Save Menu
               </Button>
             </Box>

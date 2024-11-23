@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { showToast } from "../../utils/toastService";
+import { showToast } from "../../utils/toastConfig";
 import {
   addEmployee,
   addTiffin,
   addVegetable,
   getEmployees,
-  getTiffins,
+  getTiffinsForDate,
+  getTiffinsForDateRange,
   getVegtables,
 } from "../thunks/allThunk";
 
@@ -18,8 +19,10 @@ const initialState = {
   vegetablesDataStatus: "idle",
   addVegetableData: [],
   addVegetableDataStatus: "idle",
-  tiffinsData: [],
-  tiffinsDataStatus: "idle",
+  tiffinsDateData: [],
+  tiffinsDateDataStatus: "idle",
+  tiffinsDateInRangeData: [],
+  tiffinsDateInRangeDataStatus: "idle",
   addTiffinData: [],
   addTiffinDataStatus: "idle",
 };
@@ -30,6 +33,21 @@ export const allSlice = createSlice({
   reducers: {
     resetEmployeeDataStatus(state) {
       state.employeesDataStatus = "idle";
+    },
+    resetAddEmployeeDataStatus(state) {
+      state.addEmployeeDataStatus = "idle";
+    },
+    resetVegetablesDataStatus(state) {
+      state.vegetablesDataStatus = "idle";
+    },
+    resetAddVegetableDataStatus(state) {
+      state.addVegetableDataStatus = "idle";
+    },
+    resetTiffinsDataStatus(state) {
+      state.tiffinsDateDataStatus = "idle";
+    },
+    resetAddTiffinDataStatus(state) {
+      state.addTiffinDataStatus = "idle";
     },
   },
   extraReducers: (builder) => {
@@ -44,7 +62,8 @@ export const allSlice = createSlice({
       })
       .addCase(getEmployees.rejected, (state, action) => {
         state.employeesDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        state.employeesData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Add New Employee API
       .addCase(addEmployee.pending, (state) => {
@@ -53,10 +72,12 @@ export const allSlice = createSlice({
       .addCase(addEmployee.fulfilled, (state, action) => {
         state.addEmployeeDataStatus = "success";
         state.addEmployeeData = action.payload;
+        state.employeesData.push(action?.payload?.employee);
+        showToast("Employee Added Successfully", "success");
       })
       .addCase(addEmployee.rejected, (state, action) => {
         state.addEmployeeDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Get Vegetable List by date API
       .addCase(getVegtables.pending, (state) => {
@@ -68,7 +89,8 @@ export const allSlice = createSlice({
       })
       .addCase(getVegtables.rejected, (state, action) => {
         state.vegetablesDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        state.vegetablesData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Add New Vegetable API
       .addCase(addVegetable.pending, (state) => {
@@ -77,22 +99,37 @@ export const allSlice = createSlice({
       .addCase(addVegetable.fulfilled, (state, action) => {
         state.addVegetableDataStatus = "success";
         state.addVegetableData = action.payload;
+        showToast("Vegetable Added Successfully", "success");
       })
       .addCase(addVegetable.rejected, (state, action) => {
         state.addVegetableDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
-      // INFO: Get Tiffins for date range or for single date API
-      .addCase(getTiffins.pending, (state) => {
-        state.tiffinsDataStatus = "loading";
+      // INFO: Get Tiffins from for single date API
+      .addCase(getTiffinsForDate.pending, (state) => {
+        state.tiffinsDateDataStatus = "loading";
       })
-      .addCase(getTiffins.fulfilled, (state, action) => {
-        state.tiffinsDataStatus = "success";
-        state.tiffinsData = action.payload;
+      .addCase(getTiffinsForDate.fulfilled, (state, action) => {
+        state.tiffinsDateDataStatus = "success";
+        state.tiffinsDateData = action.payload;
       })
-      .addCase(getTiffins.rejected, (state, action) => {
-        state.tiffinsDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+      .addCase(getTiffinsForDate.rejected, (state, action) => {
+        state.tiffinsDateDataStatus = "failed";
+        state.tiffinsDateData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
+      })
+      // INFO: Get Tiffins from date range API
+      .addCase(getTiffinsForDateRange.pending, (state) => {
+        state.tiffinsDateInRangeDataStatus = "loading";
+      })
+      .addCase(getTiffinsForDateRange.fulfilled, (state, action) => {
+        state.tiffinsDateInRangeDataStatus = "success";
+        state.tiffinsDateInRangeData = action.payload;
+      })
+      .addCase(getTiffinsForDateRange.rejected, (state, action) => {
+        state.tiffinsDateInRangeDataStatus = "failed";
+        state.tiffinsDateInRangeData = [];
+        showToast(action?.payload?.error || "Network Issue", "error");
       })
       // INFO: Add New Tiffin for a specific date API
       .addCase(addTiffin.pending, (state) => {
@@ -101,13 +138,21 @@ export const allSlice = createSlice({
       .addCase(addTiffin.fulfilled, (state, action) => {
         state.addTiffinDataStatus = "success";
         state.addTiffinData = action.payload;
+        showToast("Tiffin Added Successfully", "success");
       })
       .addCase(addTiffin.rejected, (state, action) => {
         state.addTiffinDataStatus = "failed";
-        showToast(action?.payload?.message || null, "error");
+        showToast(action?.payload?.error || "Network Issue", "error");
       });
   },
 });
 
 export default allSlice.reducer;
-export const { resetEmployeeDataStatus } = allSlice.actions;
+export const {
+  resetEmployeeDataStatus,
+  resetAddEmployeeDataStatus,
+  resetVegetablesDataStatus,
+  resetAddVegetableDataStatus,
+  resetTiffinsDataStatus,
+  resetAddTiffinDataStatus,
+} = allSlice.actions;

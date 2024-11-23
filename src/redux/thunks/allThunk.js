@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axiosService from "../../utils/axiosService";
+import axiosService from "../../utils/axiosConfig";
 
 // INFO: Get All Employees List API
 export const getEmployees = createAsyncThunk(
@@ -55,15 +55,15 @@ export const addVegetable = createAsyncThunk(
   }
 );
 
-// INFO: Get Tiffins for date range or for single date API
-export const getTiffins = createAsyncThunk(
-  "all/getTiffins",
+// INFO: Get Tiffins for single date API
+export const getTiffinsForDate = createAsyncThunk(
+  "all/getTiffinsForDate",
   async (payload = { start: "", end: "" }, { rejectWithValue }) => {
     try {
       const response = await axiosService.get(
         payload?.end
-          ? `/vegetables?start=${payload?.start}&end=${payload?.end}`
-          : `/vegetables?start=${payload?.start}`
+          ? `/tiffin?start=${payload?.start}&end=${payload?.end}`
+          : `/tiffin?start=${payload?.start}`
       );
       return response?.data;
     } catch (error) {
@@ -72,7 +72,24 @@ export const getTiffins = createAsyncThunk(
   }
 );
 
-// INFO: Add New Tiffin for a specific date API
+// INFO: Get Tiffins for date in range API
+export const getTiffinsForDateRange = createAsyncThunk(
+  "all/getTiffinsForDateRange",
+  async (payload = { start: "", end: "" }, { rejectWithValue }) => {
+    try {
+      const response = await axiosService.get(
+        payload?.end
+          ? `/tiffin?start=${payload?.start}&end=${payload?.end}`
+          : `/tiffin?start=${payload?.start}`
+      );
+      return response?.data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+// INFO: Add a New Tiffin for a specific date API
 export const addTiffin = createAsyncThunk(
   "all/addTiffin",
   async (payload, { rejectWithValue }) => {
