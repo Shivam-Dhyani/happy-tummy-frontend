@@ -43,19 +43,11 @@ const MonthlyOrders = () => {
     (state) => state.all
   );
 
-  console.log(
-    "Tiffin Range Data::",
-    tiffinsDateInRangeData,
-    tiffinsDateInRangeDataStatus,
-    calculateEmployeeOrders(tiffinsDateInRangeData)
-  );
-
   useEffect(() => {
     const getTiffinsPayload = {
       start: orderMonth.startOf("month").utc().toISOString(),
       end: orderMonth.endOf("month").utc().toISOString(),
     };
-    console.log("getTiffinsPayload::", getTiffinsPayload);
     dispatch(getTiffinsForDateRange(getTiffinsPayload));
   }, [orderMonth, dispatch]);
 

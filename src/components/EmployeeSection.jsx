@@ -16,11 +16,7 @@ import * as Yup from "yup";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addTiffin,
-  getEmployees,
-  getVegtables,
-} from "../redux/thunks/allThunk";
+import { addTiffin, getVegtables } from "../redux/thunks/allThunk";
 import { useEffect, useRef } from "react";
 import { resetAddTiffinDataStatus } from "../redux/slices/allSlice";
 
@@ -34,8 +30,6 @@ const EmployeeSection = () => {
     vegetablesDataStatus,
     addTiffinDataStatus,
   } = useSelector((state) => state.all);
-
-  console.log("vegetablesData::", vegetablesData);
 
   // Validation schema for the form
   const validationSchema = Yup.object({
@@ -58,18 +52,12 @@ const EmployeeSection = () => {
       .minute(0)
       .second(0)
       .millisecond(0);
-    console.log("values::", dateWithZeroTime.toISOString());
     const addTiffinPayload = {
       ...values,
       date: dateWithZeroTime.toISOString(),
     };
     dispatch(addTiffin(addTiffinPayload));
   };
-
-  // API Call for get Employees
-  useEffect(() => {
-    dispatch(getEmployees());
-  }, [dispatch]);
 
   // API Call for get vegetables
   useEffect(() => {
@@ -119,7 +107,6 @@ const EmployeeSection = () => {
           errors,
           touched,
         }) => {
-          // console.log("values::", values.date);
           return (
             <Form>
               {/* Date Picker */}
@@ -169,6 +156,10 @@ const EmployeeSection = () => {
                 >
                   <CircularProgress size={50} />
                 </Box>
+              ) : vegetablesData.length === 0 ? (
+                <Typography color="textSecondary" textAlign="center">
+                  No Vegetable Available for this date!
+                </Typography>
               ) : (
                 <>
                   {/* Employee Name Dropdown */}
