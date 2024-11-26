@@ -163,7 +163,8 @@ const LandingPage = () => {
                   variant="contained"
                   color="primary"
                   size="large"
-                  href="#feedback"
+                  href="https://forms.gle/qBZ73HZc8wCHn9KRA"
+                  target="_blank"
                 >
                   Share Your Feedback
                 </Button>
