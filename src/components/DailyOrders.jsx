@@ -32,8 +32,6 @@ const DailyOrders = () => {
     (state) => state.all
   );
 
-  console.log("tiffinsDateData::", tiffinsDateData, tiffinsDateDataStatus);
-
   const generateWhatsAppMessage = () => {
     // Get the order date from the first tiffin data
     const orderDateUTC = tiffinsDateData[0]?.date;
@@ -87,7 +85,6 @@ const DailyOrders = () => {
     const getTiffinsPayload = {
       start: dateWithZeroTime.toISOString(),
     };
-    console.log("getTiffinsPayload::", getTiffinsPayload);
     dispatch(getTiffinsForDate(getTiffinsPayload));
   }, [orderDate, dispatch]);
 
