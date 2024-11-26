@@ -53,7 +53,6 @@ const AddMenu = () => {
       ...values,
       date: dateWithZeroTime.toISOString(),
     };
-    console.log("addMenuPayload::", addMenuPayload);
     dispatch(addVegetable(addMenuPayload));
   };
 
