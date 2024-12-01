@@ -42,7 +42,7 @@ const DailyOrders = () => {
 
     // Group by tiffin type and vegetable
     const groupedOrders = _.groupBy(tiffinsDateData, "tiffinType");
-    const orderTypes = ["full", "half", "only-veggie"];
+    const orderTypes = ["full", "half", "only-sabji"];
 
     const messageSections = orderTypes
       .map((type) => {
@@ -63,7 +63,7 @@ const DailyOrders = () => {
             ? "Full Tiffins"
             : type === "half"
             ? "Half Tiffins"
-            : "Only-Veggie Tiffins";
+            : "Only-Sabji Tiffins";
         return `*${header}*\n    ${vegetableLines}`;
       })
       .filter(Boolean) // Remove any empty sections

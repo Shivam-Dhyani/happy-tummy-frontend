@@ -13,7 +13,7 @@ export function calculateTiffinCost(tiffin) {
       return fullTiffinPrice;
     case "half":
       return halfTiffinPrice;
-    case "only-veggie":
+    case "only-sabji":
       return tiffin.vegetableId?.price || 0;
     default:
       return 0;
@@ -55,8 +55,8 @@ export function countUniqueDates(data) {
  * Aggregates tiffin orders by employee and calculates total orders, costs, and order details.
  * @param {Array} orders - Array of order objects, each containing:
  *   @property {Object} employeeId - Object with employee details (`_id` and `name`).
- *   @property {String} tiffinType - Type of tiffin ordered ("full", "half", or "only-veggie").
- *   @property {Object} vegetableId - Object containing details about the vegetable ordered (used for "only-veggie").
+ *   @property {String} tiffinType - Type of tiffin ordered ("full", "half", or "only-sabji").
+ *   @property {Object} vegetableId - Object containing details about the vegetable ordered (used for "only-sabji").
  *   @property {String} date - ISO string representing the date of the order.
  * @returns {Array} - Array of objects, where each object summarizes the orders for a specific employee:
  *   @property {String} employeeId - The unique identifier for the employee.
@@ -79,7 +79,7 @@ export function calculateEmployeeOrders(orders) {
       tiffinPrice = FULL_TIFFIN_PRICE;
     } else if (tiffinType === "half") {
       tiffinPrice = HALF_TIFFIN_PRICE;
-    } else if (tiffinType === "only-veggie") {
+    } else if (tiffinType === "only-sabji") {
       tiffinPrice = vegetableId.price;
     }
 

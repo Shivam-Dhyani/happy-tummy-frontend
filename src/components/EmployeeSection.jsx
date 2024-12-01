@@ -43,7 +43,7 @@ const EmployeeSection = () => {
   const tiffinTypes = [
     { name: "Full", value: "full" },
     { name: "Half", value: "half" },
-    { name: "Only Veggie", value: "only-veggie" },
+    { name: "Only Sabji", value: "only-sabji" },
   ];
 
   const handleFormSubmit = (values) => {
@@ -251,7 +251,7 @@ const EmployeeSection = () => {
                     >
                       {vegetablesData[0]?.vegetables?.map((veg, idx) => (
                         <MenuItem key={idx} value={veg?._id}>
-                          {values.tiffinType === "only-veggie"
+                          {values.tiffinType === "only-sabji"
                             ? `${veg?.name} (₹${veg?.price})`
                             : veg?.name}
                         </MenuItem>
