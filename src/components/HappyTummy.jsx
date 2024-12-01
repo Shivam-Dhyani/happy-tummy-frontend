@@ -55,6 +55,7 @@ const HappyTummyApp = () => {
           justifyContent="center"
           alignItems="center"
           gap={2}
+          mx={2}
         >
           <CircularProgress size={50} />
           <Typography variant="h6">
@@ -65,11 +66,11 @@ const HappyTummyApp = () => {
         <>
           {/* Header */}
           <AppBar position="sticky">
-            <Toolbar>
+            <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography
                 variant="h6"
                 component="div"
-                sx={{ flexGrow: 1, cursor: "pointer" }}
+                sx={{ cursor: "pointer" }}
                 onClick={() => window.location.reload()}
               >
                 {role ? `Happy Tummy (${role})` : `Happy Tummy`}
