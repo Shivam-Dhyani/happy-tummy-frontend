@@ -69,7 +69,7 @@ const HappyTummyApp = () => {
               <Typography
                 variant="h6"
                 component="div"
-                sx={{ flexGrow: 1 }}
+                sx={{ flexGrow: 1, cursor: "pointer" }}
                 onClick={() => window.location.reload()}
               >
                 {role ? `Happy Tummy (${role})` : `Happy Tummy`}
