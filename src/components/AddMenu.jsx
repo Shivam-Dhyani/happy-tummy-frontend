@@ -37,7 +37,13 @@ const AddMenu = () => {
     date: Yup.date().required("Date is required"),
     vegetables: Yup.array().of(
       Yup.object().shape({
-        name: Yup.string().required("Required"),
+        name: Yup.string()
+          .required("Required")
+          .test(
+            "no-whitespace",
+            "Vegetable Name cannot be only whitespace",
+            (value) => value && value.trim().length > 0
+          ),
         price: Yup.number().required("Required").positive("Must be +ve"),
       })
     ),
