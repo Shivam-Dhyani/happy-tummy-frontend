@@ -21,7 +21,7 @@ Happy Tummy aims to achieve a "Happy Tummy State" in your organization by ensuri
 - **Efficiency**: Eliminates the need for manual tracking of tiffin orders and expenses.
 - **Simplicity**: Provides an easy-to-use interface for both employees and managers.
 
-  ---
+---
 
 ## 🌐 Related Repository  
 
