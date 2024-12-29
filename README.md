@@ -23,6 +23,13 @@ Happy Tummy aims to achieve a "Happy Tummy State" in your organization by ensuri
 
 ---
 
+## 🌐 Related Repository  
+
+You can find the **Happy Tummy Backend** repository here:  
+[Happy Tummy Backend Repository](https://github.com/Shivam-Dhyani/happy-tummy-backend) 
+
+---
+
 ## 📦 Project Setup
 
 ### Prerequisites
@@ -45,31 +52,29 @@ To run this app locally, make sure you have:
 
    ```bash
    npm install
-   # or
-   yarn install
    ```
+   
+3. Set up the `.env` file with the following:  
 
-3. Start the development server:
+   ```env  
+   VITE_REACT_APP_API_URL=your-backend-api-base-url
+   ``` 
+
+4. Start the development server:
 
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
 
-4. Build the app for production:
+5. Build the app for production:
 
    ```bash
    npm run build
-   # or
-   yarn build
    ```
 
-5. Preview the production build:
+6. Preview the production build:
    ```bash
    npm run preview
-   # or
-   yarn preview
    ```
 
 ---
