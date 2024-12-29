@@ -1,4 +1,4 @@
-# Happy Tummy Frontend
+# Happy Tummy Frontend [Live](https://dev-happy-tummy-app.netlify.app/)
 
 Welcome to the **Happy Tummy** app! This is the frontend of the Happy Tummy application designed to simplify and centralize tiffin order management within an organization.
 
