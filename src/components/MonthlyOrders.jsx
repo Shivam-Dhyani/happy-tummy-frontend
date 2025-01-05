@@ -64,8 +64,11 @@ const MonthlyOrders = () => {
   const generateWhatsAppMessage = () => {
     if (selectedEmployee) {
       // Symbols for box drawing
-      const topBorder = `┌────────────────────────┐\n`;
-      const bottomBorder = `└────────────────────────┘\n`;
+      // const topBorder = `┌────────────────────────┐\n`;
+      // const bottomBorder = `└────────────────────────┘\n`;
+
+      const topBorder = `────────────────────\n`;
+      const bottomBorder = `────────────────────\n`;
 
       // Summary section with  top & bottom borders
       const summaryMessage =
