@@ -71,7 +71,12 @@ const MonthlyOrders = () => {
       const summaryMessage =
         `${topBorder}` +
         `   *Tiffin Summary for ${selectedEmployee.name}*\n\n` +
-        `   *Month: ${moment(orderMonth).format("MMMM YYYY")}*\n\n` +
+        `   *Month: ${
+          tiffinsDateInRangeData?.[0] &&
+          moment(tiffinsDateInRangeData?.[0]?.date)
+            ?.tz("Asia/Kolkata")
+            ?.format("MMMM YYYY")
+        }*\n\n` +
         `   *Total Cost: ₹${selectedEmployee.totalCost}*\n\n` +
         `   *Total Tiffin Ordered: ${selectedEmployee.orderList.length}*\n` +
         `${bottomBorder}\n\n` +
