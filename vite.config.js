@@ -8,6 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      devOptions: {
+        enabled: true, // Enables PWA in dev mode
+        type: "module",
+      },
       manifest: "./public/manifest.json", // Use your existing manifest.json
     }),
   ],
